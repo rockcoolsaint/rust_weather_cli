@@ -1,8 +1,10 @@
-use std::io; // Importing the standard input/output library for user input
+use std::{env, io}; // Importing the standard input/output library for user input
 
 use serde::Deserialize; // Importing serde for JSON deserialization
 
 use colored::*; // Importing colored crate for text coloring
+
+use dotenv::dotenv;
 
 // Struct to deserialize the JSON from openweatherAPI
 #[derive(Deserialize, Debug)]
@@ -99,6 +101,7 @@ fn get_temperature_emoji(temperature: f64) -> &'static str {
 }
 
 fn main() {
+    dotenv().ok();
     println!("{}", "Welcome to Weather Station!".bright_yellow()); // Displaying welcome message
 
     loop {
@@ -115,10 +118,10 @@ fn main() {
         let country_code = country_code.trim();
 
         // Get your API key from OpenWeatherMap
-        let api_key = "my_own_api_key_e740761c9ba933823c09ea"; 
+        let api_key = env::var("API_KEY").expect("API_KEY is missing"); 
 
         // Calling the function to fetch weather information
-        match get_weather_info(&city, &country_code, api_key) {
+        match get_weather_info(&city, &country_code, &api_key) {
             Ok(response) => {
                 display_weather_info(&response); // Displaying weather information
             }
